@@ -9,5 +9,5 @@ public interface IAttributeDao {
     List<AttributeDTO> getAttributeList();
     void save(AttributeDTO attribute);
     AttributeDTO getAttribute(int i);
-    
+
 }
