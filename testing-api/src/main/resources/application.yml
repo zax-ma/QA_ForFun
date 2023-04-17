@@ -1,0 +1,6 @@
+document:
+  name: test_document
+  description: ???????? ????????
+  attributes:
+    name: attribute1, attribute2
+    description: hello, how r u
