@@ -102,7 +102,7 @@ math-one-transaction:
     value_sum: 5000
 
 
-################ WLC ################
+################## WLC ##################
 
 api:
   method: /search/by/name,/search/by/document,/search/by/text
@@ -118,7 +118,7 @@ organization:
 ############### Settings for task's further treatment #########
 
 tasks:
-  path: C:\\Users\\zakharevich\\Documents\\Java\\QA\\
+  path: C:\\Users\\user_name\\Documents\\Java\\QA\\
   file-name-to-save-tasks: tasks.txt
   file-name-to-save-joins: joins.txt
 
