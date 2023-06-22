@@ -1,0 +1,124 @@
+connection:
+  names:
+    - test
+  addresses:
+    test: http://<ip>
+    workflow: /workflow/process
+    dictionary: /integration/api/la/dictionary
+    control: /integration/api/control
+    check: /integration/api/check
+  authentication: https://<SCRealm_connect_token>
+  secret: <your_secret>
+  user: squirrel
+  password: sally
+
+####### Document settings #######
+document:
+  name: D_FISH_AND_CHIPS
+  doc-type: DOC_TYPE
+  description: Проверка клиента и его операций
+  attribute:
+    name: A_CLIENT,A_SUM
+    description: Атрибут с именем плательщика,Сумма перевода
+
+factor-wlc:
+  type: WLC
+  name: F_ORDINARY_SRCH,F_ID_SEARCH,F_FRAGMENT_SEARCH
+  document: D_FISH_AND_CHIPS
+  field:
+    attribute: A_CLIENT
+    category:
+    country:
+  status: active
+
+factor-math:
+  type: MATH
+  name: F_MATH_V_SUM,F_MATH_V_COUNT,F_MATH_V_AVG,F_MATH_V_MAX,F_MATH_V_MIN,F_MATH_COMMON
+  description: Сумма,Количество,Среднее,Максимальное,Минимальное,Общее
+  expression: IF V_SUM > 10000, IF V_COUNT > 3, IF V_AVG > 1000, IF V_MAX > 15000, IF V_MIN < 5000, IF A_SUM > 1000
+  status: active
+
+variable:
+  name: V_SUM,V_COUNT,V_AVG,V_MAX,V_MIN
+  description: Сумма,Количество,Среднее значение,Максимальное значение,Минимальное значение
+  document: D_FISH_AND_CHIPS
+  field:
+    attribute: A_SUM
+    anchor: A_CLIENT
+    period: 30dt
+
+rule-wlc:
+  name: R_Проверка клиента в черном списке,R_Проверка клиента в списке FinCERT
+  risk-profile: 1
+  description: Правило для првоерки клиента на вхождение в черный список,Правило для првоерки клиента на вхождение в спикос FinCERT
+  status: active
+  post-check: false
+  field:
+    factor: F_ORDINARY_SRCH,F_ID_SEARCH
+
+rule-math:
+  name: R_Превышение лимита по сумме операций
+  risk-profile: 1
+  description: Правило для отображения превышения порогового значения по сумме операций,Правило для отображения превышения лимита суммы одной операции
+  status: active
+  post-check: true
+  field:
+    factor: F_MATH_V_SUM
+
+rule-math-common:
+  name: R_Превышение лимита суммы одной операции
+  risk-profile: 1
+  description: Правило для отображения превышения лимита суммы одной операции
+  status: active
+  post-check: false
+  field:
+    factor: F_MATH_COMMON
+
+######## Transaction settings ########
+
+wlc-transaction:
+  precheck: FALSE
+  fields:
+    name: A_CLIENT
+    value: ФИО
+    doc-source: SS
+
+math-transaction:
+  precheck: FALSE
+  fields:
+    client: A_CLIENT
+    name: ФИО
+    sum: A_SUM
+    value: 150000000
+    doc-source: SS
+
+math-one-transaction:
+  precheck: FALSE
+  fields:
+    name: A_CLIENT
+    value: ФИО
+    doc-source: SS
+    sum: A_SUM
+    value_sum: 5000
+
+
+################ WLC ################
+
+api:
+  method: /search/by/name,/search/by/document,/search/by/text
+
+
+client:
+  name:
+  id:
+
+organization:
+  name:
+
+############### Settings for task's further treatment #########
+
+tasks:
+  path: C:\\Users\\zakharevich\\Documents\\Java\\QA\\
+  file-name-to-save-tasks: tasks.txt
+  file-name-to-save-joins: joins.txt
+
